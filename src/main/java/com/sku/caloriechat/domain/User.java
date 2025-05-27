@@ -1,0 +1,28 @@
+package com.sku.caloriechat.domain;
+
+import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+    private Long userId;
+    private String userName;
+    private String email;
+    private String password;
+    private String gender;
+    private Integer age;
+    private BigDecimal height;
+    private BigDecimal weight;
+    private String activityLevel;
+    private BigDecimal goalWeight;
+    private String targetLossSpeed;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
+}
