@@ -1,6 +1,6 @@
 package com.sku.caloriechat.dto;
 
-import com.sku.caloriechat.exception.ErrorCode;
+import com.sku.caloriechat.enums.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

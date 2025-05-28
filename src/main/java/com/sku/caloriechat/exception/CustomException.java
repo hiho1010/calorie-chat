@@ -1,5 +1,6 @@
 package com.sku.caloriechat.exception;
 
+import com.sku.caloriechat.enums.ErrorCode;
 import lombok.Getter;
 
 @Getter

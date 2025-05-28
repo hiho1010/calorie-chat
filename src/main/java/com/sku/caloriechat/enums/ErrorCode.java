@@ -1,4 +1,4 @@
-package com.sku.caloriechat.exception;
+package com.sku.caloriechat.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
