@@ -29,6 +29,7 @@ public class UserService {
 
         User user = new User(
             null,
+            null,
             dto.userName(),
             dto.email(),
             hashed,
