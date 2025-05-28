@@ -1,5 +1,6 @@
 package com.sku.caloriechat.domain;
 
+import com.sku.caloriechat.enums.UserStatus;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class User {
     private Long userId;
+    private UserStatus status;
     private String userName;
     private String email;
     private String password;

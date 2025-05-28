@@ -1,6 +1,7 @@
 package com.sku.caloriechat.dao;
 
 import com.sku.caloriechat.domain.User;
+import com.sku.caloriechat.enums.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,9 +23,9 @@ public class UserDao {
     public long save(User u) {
         String sql = """
             INSERT INTO `user`
-            (user_name, email, password, gender, age, height, weight,
+            (status, user_name, email, password, gender, age, height, weight,
              activity_level, goal_weight, target_loss_speed, created_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?,NOW())
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW())
             """;
 
         KeyHolder kh = new GeneratedKeyHolder();
@@ -32,16 +33,17 @@ public class UserDao {
         jdbc.update(conn -> {
             PreparedStatement ps =
                 conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString   (1,  u.getUserName());
-            ps.setString   (2,  u.getEmail());
-            ps.setString   (3,  u.getPassword());
-            ps.setString   (4,  u.getGender());
-            ps.setInt      (5,  u.getAge());
-            ps.setBigDecimal(6, u.getHeight());
-            ps.setBigDecimal(7, u.getWeight());
-            ps.setString   (8,  u.getActivityLevel());
-            ps.setBigDecimal(9, u.getGoalWeight());
-            ps.setString   (10, u.getTargetLossSpeed());
+            ps.setString   (1,  u.getStatus().name()); // enum → String
+            ps.setString   (2,  u.getUserName());
+            ps.setString   (3,  u.getEmail());
+            ps.setString   (4,  u.getPassword());
+            ps.setString   (5,  u.getGender());
+            ps.setInt      (6,  u.getAge());
+            ps.setBigDecimal(7, u.getHeight());
+            ps.setBigDecimal(8, u.getWeight());
+            ps.setString   (9,  u.getActivityLevel());
+            ps.setBigDecimal(10, u.getGoalWeight());
+            ps.setString   (11, u.getTargetLossSpeed());
             return ps;
         }, kh);
 
@@ -70,6 +72,7 @@ public class UserDao {
         Timestamp deleted = rs.getTimestamp("deleted_at");
         return new User(
             rs.getLong("user_id"),
+            UserStatus.valueOf(rs.getString("status")), // String → enum
             rs.getString("user_name"),
             rs.getString("email"),
             rs.getString("password"),

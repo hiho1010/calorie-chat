@@ -5,7 +5,7 @@ import com.sku.caloriechat.dao.UserDao;
 import com.sku.caloriechat.domain.User;
 import com.sku.caloriechat.dto.*;
 import com.sku.caloriechat.exception.CustomException;
-import com.sku.caloriechat.exception.ErrorCode;
+import com.sku.caloriechat.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
