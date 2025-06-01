@@ -73,4 +73,10 @@ public class UserService {
             u.getCreatedAt(), u.getUpdatedAt()
         );
     }
+
+    // 유저 찾기
+    public User findById(Long userId) {
+        return userDao.findById(userId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+    }
 }
