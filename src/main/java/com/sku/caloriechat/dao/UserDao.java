@@ -88,4 +88,12 @@ public class UserDao {
             deleted == null ? null : deleted.toLocalDateTime()
         );
     };
+
+    public Optional<User> findById(Long id) {
+        String sql = """
+        SELECT * FROM `user`
+        WHERE user_id = ? AND deleted_at IS NULL
+    """;
+        return jdbc.query(sql, userRowMapper, id).stream().findFirst();
+    }
 }
