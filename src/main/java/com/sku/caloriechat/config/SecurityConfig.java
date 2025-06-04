@@ -51,6 +51,11 @@ public class SecurityConfig {
                     // 프로필 관련도 임시로 공개 허용 나중에 지워야 함. 로그인 프로세스 완성되면
                     .requestMatchers("/api/profile/**").permitAll()
 
+                    .requestMatchers(HttpMethod.POST,
+                            "/api/weight-log/**").permitAll()
+                    .requestMatchers(HttpMethod.GET,
+                            "/api/weight-log/**").permitAll()
+
 
                     // 그 외는 인증 필요
                 .anyRequest().authenticated())
