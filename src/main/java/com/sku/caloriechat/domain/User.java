@@ -1,7 +1,10 @@
 package com.sku.caloriechat.domain;
 
+import com.sku.caloriechat.enums.ActivityLevel;
+import com.sku.caloriechat.enums.TargetLossSpeed;
 import com.sku.caloriechat.enums.UserStatus;
 import java.math.BigDecimal;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,9 +24,9 @@ public class User {
     private Integer age;
     private BigDecimal height;
     private BigDecimal weight;
-    private String activityLevel;
+    private ActivityLevel activityLevel;
     private BigDecimal goalWeight;
-    private String targetLossSpeed;
+    private TargetLossSpeed targetLossSpeed;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;

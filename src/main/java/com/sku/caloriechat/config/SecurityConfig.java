@@ -24,12 +24,14 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())
-            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
 
             .authorizeHttpRequests(auth -> auth
                 // ── 정적 리소스 & 뷰 ───────────────────────────
-                .requestMatchers("/", "/login", "/signup",
-                    "/css/**", "/js/**", "/img/**", "/webjars/**").permitAll()
+                .requestMatchers("/", "/login", "/signup", "/home",
+                    "/css/**", "/js/**", "/img/**", "/webjars/**",
+                    "/error/**")                // ★ 스프링 기본 오류 페이지
+                .permitAll()
 
                 // ── Swagger ───────────────────────────────────
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**",
@@ -47,12 +49,18 @@ public class SecurityConfig {
                     "/api/feedback/**",
                     "/api/profile/**").permitAll()
 
+                // --임시로 모두 허용---------
+                .requestMatchers("/**").permitAll()
+
                 // ── 나머지는 인증 필요 ───────────────────────
                 .anyRequest().authenticated())
 
+
+
             // 폼 로그인 사용 안 할 경우 반드시 disable
-            .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(Customizer.withDefaults());   // = BasicAuth (테스트용)
+            .formLogin(AbstractHttpConfigurer::disable);
+//            .httpBasic(Customizer.withDefaults());   // = BasicAuth (테스트용)
+
 
         return http.build();
     }

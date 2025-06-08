@@ -1,35 +1,30 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko"
-      th:replace="layout/base :: content">
-<body>
 <section class="row justify-content-center mt-5">
     <div class="col-md-5 col-lg-4">
         <div class="card shadow-sm border-0">
             <div class="card-body p-4">
                 <h2 class="mb-4 text-center text-primary-green">회원가입</h2>
 
-                <form id="signupForm">
-                    <input type="hidden" th:name="${_csrf.parameterName}"
-                           th:value="${_csrf.token}" id="csrfTokenSignup"/>
+                <div id="signupMsg" class="alert alert-danger d-none"></div>
 
+                <form id="signupForm">
                     <div class="mb-3">
                         <label class="form-label">이메일</label>
-                        <input type="email" class="form-control" name="email"
-                               placeholder="you@example.com" required>
+                        <input type="email" class="form-control" name="email" required>
                     </div>
-
+                    <div class="mb-3">
+                        <label class="form-label">닉네임</label>
+                        <input type="text" class="form-control" name="nickname" required>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">비밀번호</label>
                         <input type="password" class="form-control" name="password"
                                minlength="6" required>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">비밀번호 확인</label>
                         <input type="password" class="form-control" name="confirm"
                                minlength="6" required>
                     </div>
-
                     <button type="submit" class="btn btn-primary-green w-100">가입하기</button>
                 </form>
 
@@ -40,5 +35,3 @@
         </div>
     </div>
 </section>
-</body>
-</html>

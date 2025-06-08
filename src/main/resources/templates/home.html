@@ -1,5 +1,27 @@
-<section th:fragment="content">
-  <h1 class="display-5 fw-semibold text-primary-green">식단·체중 관리, 한눈에!</h1>
-  <p class="lead mb-4">CalorieChat으로 쉽고 빠르게 칼로리를 기록하고 건강한 삶을 시작하세요.</p>
-  <a class="btn btn-lg btn-primary-green px-5" th:href="@{/signup}">회원가입하고 시작하기</a>
+<!-- templates/home.html -->
+<section th:fragment="content"
+         xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+  <h2 class="mb-4">나의 체중 추이</h2>
+
+  <!-- ===== 차트 캔버스 ===== -->
+  <canvas id="weightChart" height="120"></canvas>
+
+  <!-- ↓↓↓ userId 값을 data-attribute 로 내려서 JS 가 읽음 -->
+  <div id="__meta" th:data-userid="${userId}"></div>
+
+  <!-- ===== “새 기록” 버튼 ===== -->
+  <div class="mt-4">
+    <a class="btn btn-primary-green" th:href="@{/weight-log/form}">새 몸무게 기록</a>
+  </div>
+
+  <!-- ===== 로그인 후 인사말 & 식단 CTA ===== -->
+  <div sec:authorize="isAuthenticated()" class="mt-5">
+    <h2 th:text="'안녕하세요, ' + (${userName} ?: '회원') + ' 님!'"></h2>
+    <a class="btn btn-primary-green btn-lg mt-3" th:href="@{/meals/new}">식단 등록하기</a>
+  </div>
+
+  <!-- ===== Chart.js & 전용 스크립트 ===== -->
+  <script src="/webjars/chartjs/4.4.2/dist/chart.umd.js"></script>
+  <script src="/js/weight-chart.js"></script>
 </section>

@@ -14,7 +14,8 @@ public enum ErrorCode {
     DUPLICATE_EMAIL  ("1003", HttpStatus.CONFLICT             , "이미 사용 중인 이메일입니다."),
 
     // ===== 시스템 공통 =====
-    INTERNAL_ERROR   ("9999", HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 서버 오류입니다.");
+    INTERNAL_ERROR   ("9999", HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 서버 오류입니다."),
+    UNAUTHORIZED("9998", HttpStatus.UNAUTHORIZED, "인증되지 않았습니다.");
 
     private final String     code;        // 비즈니스 코드
     private final HttpStatus httpStatus;  // HTTP 상태

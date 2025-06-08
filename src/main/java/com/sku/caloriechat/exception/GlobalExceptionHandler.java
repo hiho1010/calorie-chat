@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -44,4 +45,7 @@ public class GlobalExceptionHandler {
         HttpSession session = req.getSession(false);
         return (session != null) ? session.getId() : null;
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public void ignoreStatic404() { /* 아무 것도 안 함 → 그대로 404 */ }
 }

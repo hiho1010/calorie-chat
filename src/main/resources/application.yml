@@ -32,5 +32,5 @@ server:
 
 logging:
   level:
-    org.springframework.security: DEBUG   # 보안 필터 매칭 확인용 (필요 시 INFO로 낮춤)
+    org.springframework.security: INFO   # 보안 필터 매칭 확인용 (필요 시 INFO로 낮춤)
     # org.hibernate.SQL: debug            # SQL 출력이 필요하면 주석 해제

@@ -4,41 +4,20 @@
   --primary-green-light: #7cd57c;
 }
 
-/* Utility */
 .text-primary-green   { color: var(--primary-green) !important; }
 .bg-primary-green     { background-color: var(--primary-green) !important; }
 .btn-primary-green    { background-color: var(--primary-green); border-color: var(--primary-green); }
 .btn-primary-green:hover,
 .btn-primary-green:focus { background-color: var(--primary-green-dark); border-color: var(--primary-green-dark); }
 
-/* Navbar tweak (override Bootstrap brand color) */
-.navbar.bg-primary-green {
-  background-color: var(--primary-green) !important;
-}
+.navbar.bg-primary-green { background-color: var(--primary-green) !important; }
 
-.navbar-dark .navbar-nav .nav-link {
-  color: #fff;
-}
+.navbar-dark .nav-link { color: #fff; }
+.navbar-dark .nav-link:hover { color: var(--primary-green-light); }
 
-.navbar-dark .navbar-nav .nav-link:hover {
-  color: var(--primary-green-light);
-}
+.card { border-radius: 1rem; }
+.card .card-body { padding: 2rem; }
 
-/* Card border radius & shadow */
-.card {
-  border-radius: 1rem;
-}
+.btn-primary-green { color: #fff; }
 
-.card .card-body {
-  padding: 2rem;
-}
-
-/* Buttons */
-.btn-primary-green {
-  color: #fff;
-}
-
-/* Footer */
-footer {
-  background-color: #f8f9fa;
-}
+footer { background-color: #f8f9fa; }

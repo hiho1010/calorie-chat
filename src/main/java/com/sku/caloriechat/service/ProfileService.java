@@ -21,9 +21,10 @@ public class ProfileService {
         ProfileRequestDto dto = converter.convert(user);
 
         double bmr = calculateBMR(dto.getGender(), dto.getAge(), dto.getWeight(), dto.getHeight());
-        double maintenanceCalories = bmr * getActivityMultiplier(dto.getActivityLevel());
+        double maintenanceCalories = bmr * getActivityMultiplier(
+            String.valueOf(dto.getActivityLevel()));
 
-        double deficit = getDeficitByTargetLossSpeed(user.getTargetLossSpeed());
+        double deficit = getDeficitByTargetLossSpeed(String.valueOf(user.getTargetLossSpeed()));
         double targetCalories = maintenanceCalories - deficit;
 
         return new CalorieResponseDto(maintenanceCalories, deficit, targetCalories);

@@ -1,0 +1,26 @@
+<section th:fragment="content">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+
+      <!-- 프로필 카드 -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body d-flex align-items-center">
+          <img src="/img/default_profile.png" alt="profile"
+               width="200" height="200" class="rounded-circle me-3">
+          <div>
+            <h4 class="mb-0" th:text="${nickname}">User</h4>
+            <span class="text-muted small" th:text="${#authentication.name}">user@example.com</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 식단 등록 CTA -->
+      <div class="text-center">
+        <a th:href="@{/meals/new}" class="btn btn-primary-green btn-lg px-5">
+          식단 등록하기
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -1,20 +1,16 @@
-// dto/UserRegisterRequestDto.java
 package com.sku.caloriechat.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
-import java.math.BigDecimal;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-@Schema(description = "회원 가입 요청")
 public record UserRegisterRequestDto(
-    @NotBlank String userName,
-    @Email @NotBlank String email,
-    @Size(min = 8, max = 60) String password,          // BCrypt 60자까지
-    @Pattern(regexp = "MALE|FEMALE") String gender,
-    @Positive @Max(120) Integer age,
-    @Positive BigDecimal height,                       // cm
-    @Positive BigDecimal weight,                       // kg
-    @NotBlank String activityLevel,
-    @Positive BigDecimal goalWeight,
-    @NotBlank String targetLossSpeed
+
+    @Email(message = "잘못된 이메일 형식입니다.")
+    @NotBlank(message = "이메일은 필수입니다.")
+    String email,
+
+    @NotBlank(message = "비밀번호는 필수입니다.")
+    @Size(min = 6, max = 12, message = "비밀번호는 6~12자여야 합니다.")
+    String password
 ) {}

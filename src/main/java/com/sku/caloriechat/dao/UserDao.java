@@ -1,6 +1,8 @@
 package com.sku.caloriechat.dao;
 
 import com.sku.caloriechat.domain.User;
+import com.sku.caloriechat.enums.ActivityLevel;
+import com.sku.caloriechat.enums.TargetLossSpeed;
 import com.sku.caloriechat.enums.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,34 +22,51 @@ public class UserDao {
 
     private final JdbcTemplate jdbc;
 
-    public long save(User u) {
+    /** 최초 회원가입 – 이메일·비밀번호·상태만 저장 */
+    public long saveMinimal(String email, String hashedPw) {
         String sql = """
-            INSERT INTO `user`
-            (status, user_name, email, password, gender, age, height, weight,
-             activity_level, goal_weight, target_loss_speed, created_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW())
+            INSERT INTO `user` (status, email, password, created_at)
+            VALUES (?, ?, ?, NOW())
             """;
 
         KeyHolder kh = new GeneratedKeyHolder();
-
         jdbc.update(conn -> {
             PreparedStatement ps =
                 conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString   (1,  u.getStatus().name()); // enum → String
-            ps.setString   (2,  u.getUserName());
-            ps.setString   (3,  u.getEmail());
-            ps.setString   (4,  u.getPassword());
-            ps.setString   (5,  u.getGender());
-            ps.setInt      (6,  u.getAge());
-            ps.setBigDecimal(7, u.getHeight());
-            ps.setBigDecimal(8, u.getWeight());
-            ps.setString   (9,  u.getActivityLevel());
-            ps.setBigDecimal(10, u.getGoalWeight());
-            ps.setString   (11, u.getTargetLossSpeed());
+            ps.setString(1, UserStatus.ACTIVE.name());
+            ps.setString(2, email);
+            ps.setString(3, hashedPw);
             return ps;
         }, kh);
-
         return kh.getKey() == null ? -1L : kh.getKey().longValue();
+    }
+
+    /** 프로필 정보(닉네임·신체치수 등) 부분 업데이트 – null 값은 무시 */
+    public void updateProfile(Long id, User profile) {
+        String sql = """
+            UPDATE `user` SET
+              user_name         = COALESCE(?, user_name),
+              gender            = COALESCE(?, gender),
+              age               = COALESCE(?, age),
+              height            = COALESCE(?, height),
+              weight            = COALESCE(?, weight),
+              activity_level    = COALESCE(?, activity_level),
+              goal_weight       = COALESCE(?, goal_weight),
+              target_loss_speed = COALESCE(?, target_loss_speed),
+              updated_at        = NOW()
+            WHERE user_id = ? AND deleted_at IS NULL
+            """;
+        jdbc.update(sql,
+            profile.getUserName(),
+            profile.getGender(),
+            profile.getAge(),
+            profile.getHeight(),
+            profile.getWeight(),
+            profile.getActivityLevel(),
+            profile.getGoalWeight(),
+            profile.getTargetLossSpeed(),
+            id
+        );
     }
 
     public Optional<User> findByEmail(String email) {
@@ -72,7 +91,7 @@ public class UserDao {
         Timestamp deleted = rs.getTimestamp("deleted_at");
         return new User(
             rs.getLong("user_id"),
-            UserStatus.valueOf(rs.getString("status")), // String → enum
+            UserStatus.valueOf(rs.getString("status")),
             rs.getString("user_name"),
             rs.getString("email"),
             rs.getString("password"),
@@ -80,9 +99,9 @@ public class UserDao {
             rs.getInt("age"),
             rs.getBigDecimal("height"),
             rs.getBigDecimal("weight"),
-            rs.getString("activity_level"),
+            ActivityLevel.valueOf(rs.getString("activity_level")),
             rs.getBigDecimal("goal_weight"),
-            rs.getString("target_loss_speed"),
+            TargetLossSpeed.valueOf(rs.getString("target_loss_speed")),
             rs.getTimestamp("created_at").toLocalDateTime(),
             updated == null ? null : updated.toLocalDateTime(),
             deleted == null ? null : deleted.toLocalDateTime()

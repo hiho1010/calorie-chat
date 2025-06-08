@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>오류 | CalorieChat</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+<!-- 상단 네비 재사용 -->
+<div th:replace="~{layout/header :: headerFragment}"></div>
+
+<main class="container flex-grow-1 d-flex align-items-center justify-content-center">
+  <div class="text-center">
+
+    <!-- 상태 코드 & 텍스트 -->
+    <h1 class="display-4 fw-bold text-primary-green">
+      <span th:text="${status}">500</span>
+    </h1>
+    <p class="lead mb-4" th:text="${error}">Unexpected Error</p>
+
+    <!-- 상세 메시지 (개발 단계만 노출) -->
+    <pre class="small text-muted mb-4" style="white-space: pre-wrap;"
+         th:if="${message}" th:text="${message}">에러 메시지</pre>
+
+    <!-- 홈으로 -->
+    <a class="btn btn-primary-green px-4" href="/">홈으로 돌아가기</a>
+  </div>
+</main>
+
+<footer th:replace="~{layout/footer :: footerFragment}"></footer>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

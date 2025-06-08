@@ -1,5 +1,6 @@
 package com.sku.caloriechat.dto.calorieCalculator;
 
+import com.sku.caloriechat.enums.ActivityLevel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,5 +33,5 @@ public class ProfileRequestDto {
 
     @NotBlank (message = "활동수준 입력은 필수입니다.")
     @Schema(description = "활동 수준 (LOW, MODERATE, HIGH)", example = "MODERATE", required = true)
-    private String activityLevel;
+    private ActivityLevel activityLevel;
 }
