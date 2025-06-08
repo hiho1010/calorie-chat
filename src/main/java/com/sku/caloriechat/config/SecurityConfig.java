@@ -57,6 +57,12 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET,
                             "/api/weight-log/**").permitAll()
 
+                    .requestMatchers(HttpMethod.GET,
+                            "/api/feedback/**").permitAll()
+                    .requestMatchers(HttpMethod.POST,
+                            "/api/feedback/**").permitAll()
+
+
 
 
                     // 그 외는 인증 필요

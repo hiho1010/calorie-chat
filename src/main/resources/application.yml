@@ -21,8 +21,13 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
+
+openai:
+  api-key: ${OPENAI_API_KEY}
+
 server:
   servlet:
     encoding:
       charset: UTF-8
       force-response: true
+
