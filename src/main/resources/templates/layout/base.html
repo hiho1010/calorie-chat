@@ -16,7 +16,7 @@
 
 <!-- ── Main ── -->
 <main class="container pt-5 mt-4" th:fragment="content">
-  <div th:replace="${body}">BODY</div>
+  <div th:replace="${body} :: content">BODY</div>
 </main>
 
 <!-- ── Footer ── -->
