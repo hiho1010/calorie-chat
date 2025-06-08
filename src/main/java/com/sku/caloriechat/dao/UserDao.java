@@ -83,7 +83,7 @@ public class UserDao {
             Integer.class,
             email
         );
-        return cnt != null && cnt > 0;
+        return cnt > 0;
     }
 
     private final RowMapper<User> userRowMapper = (rs, rowNum) -> {

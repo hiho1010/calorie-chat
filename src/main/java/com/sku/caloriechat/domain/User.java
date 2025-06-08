@@ -4,7 +4,6 @@ import com.sku.caloriechat.enums.ActivityLevel;
 import com.sku.caloriechat.enums.TargetLossSpeed;
 import com.sku.caloriechat.enums.UserStatus;
 import java.math.BigDecimal;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
