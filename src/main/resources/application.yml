@@ -17,10 +17,8 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
     tagsSorter: alpha
-
   api-docs:
     path: /v3/api-docs
-
 
 openai:
   api-key: ${OPENAI_API_KEY}
@@ -29,5 +27,10 @@ server:
   servlet:
     encoding:
       charset: UTF-8
-      force-response: true
+      enabled: true
+      force: true
 
+logging:
+  level:
+    org.springframework.security: DEBUG   # 보안 필터 매칭 확인용 (필요 시 INFO로 낮춤)
+    # org.hibernate.SQL: debug            # SQL 출력이 필요하면 주석 해제

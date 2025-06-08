@@ -1,0 +1,28 @@
+<!-- templates/layout/base.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${pageTitle} ?: 'CalorieChat'">CalorieChat</title>
+
+  <!-- Bootstrap via WebJars -->
+  <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-light">
+
+<!-- ── Header ── -->
+<div th:replace="layout/header :: headerFragment"></div>
+
+<!-- ── Main ── -->
+<main class="container pt-5 mt-4" th:fragment="content">
+  <div th:replace="${body}">BODY</div>
+</main>
+
+<!-- ── Footer ── -->
+<div th:replace="layout/footer :: footerFragment"></div>
+
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="/js/auth.js"></script> <!-- 로그인·회원가입 JSON 전송 -->
+</body>
+</html>
