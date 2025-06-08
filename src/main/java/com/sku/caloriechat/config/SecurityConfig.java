@@ -42,7 +42,8 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/swagger-ui/**", "/v3/api-docs/**",
                     "/swagger-resources/**", "/webjars/**").permitAll()
-
+                .requestMatchers(HttpMethod.POST,
+                    "/api/users/*/meals").permitAll()
                 // 회원가입·로그인 공개
                 .requestMatchers(HttpMethod.POST,
                     "/api/v1/users/register",
@@ -55,6 +56,7 @@ public class SecurityConfig {
                             "/api/weight-log/**").permitAll()
                     .requestMatchers(HttpMethod.GET,
                             "/api/weight-log/**").permitAll()
+
 
 
                     // 그 외는 인증 필요
