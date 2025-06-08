@@ -1,0 +1,65 @@
+package com.sku.caloriechat.controller;
+
+import com.sku.caloriechat.domain.FeedbackLog;
+import com.sku.caloriechat.dto.MealSummaryRequestDto;
+import com.sku.caloriechat.service.FeedbackService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/feedback")
+@RequiredArgsConstructor
+@Tag(name = "Feedback", description = "GPT 피드백 관리 API")
+public class FeedbackController {
+
+    private final FeedbackService feedbackService;
+
+    @PostMapping("/generate")
+    @Operation(
+            summary = "GPT 피드백 생성 및 저장",
+            description = "식단 요약(summary)을 기반으로 GPT에게 피드백을 받아 저장합니다."
+    )
+    public ResponseEntity<String> generateFeedback(
+            @RequestParam Long userId,
+            @RequestBody MealSummaryRequestDto requestDto
+    ) {
+        feedbackService.generateAndSaveFeedback(userId, requestDto.getSummary());
+        return ResponseEntity.ok("GPT feedback generated and saved.");
+    }
+
+    @PostMapping("/manual")
+    @Operation(
+            summary = "수동 피드백 저장",
+            description = "GPT 없이 수동으로 피드백 텍스트를 저장합니다."
+    )
+    public ResponseEntity<String> saveManualFeedback(
+            @RequestParam Long userId,
+            @RequestParam String feedbackText
+    ) {
+        feedbackService.saveFeedback(userId, feedbackText);
+        return ResponseEntity.ok("Manual feedback saved successfully.");
+    }
+
+    @GetMapping("/{userId}")
+    @Operation(
+            summary = "유저의 피드백 전체 조회",
+            description = "특정 유저의 전체 피드백 로그를 조회합니다."
+    )
+    public ResponseEntity<List<FeedbackLog>> getFeedbacks(@PathVariable Long userId) {
+        return ResponseEntity.ok(feedbackService.getFeedbackLogs(userId));
+    }
+
+    @GetMapping("/{userId}/today")
+    @Operation(
+            summary = "오늘자 피드백 조회",
+            description = "특정 유저의 오늘자 GPT 피드백을 단건으로 조회합니다."
+    )
+    public ResponseEntity<FeedbackLog> getTodayFeedback(@PathVariable Long userId) {
+        return ResponseEntity.ok(feedbackService.getTodayFeedback(userId));
+    }
+}
