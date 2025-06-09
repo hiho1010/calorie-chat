@@ -41,4 +41,25 @@ public class MealDao {
         }
         throw new SQLException("Meal insert 실패: PK를 얻을 수 없습니다.");
     }
+
+    public Meal findById(int mealId) throws SQLException {
+        String sql = "SELECT * FROM meal WHERE meal_id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, mealId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Meal meal = new Meal();
+                    meal.setMealId(mealId);
+                    meal.setUserId(rs.getInt("user_id"));
+                    meal.setMealTime(rs.getString("meal_time"));
+                    meal.setEatenAt(rs.getTimestamp("eaten_at").toLocalDateTime());
+                    meal.setTotalCalories(rs.getFloat("total_calories"));
+                    meal.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                    return meal;
+                }
+            }
+        }
+        throw new SQLException("해당 ID의 식단을 찾을 수 없습니다.");
+    }
 }

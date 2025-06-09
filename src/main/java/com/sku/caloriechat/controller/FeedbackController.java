@@ -1,7 +1,7 @@
 package com.sku.caloriechat.controller;
 
 import com.sku.caloriechat.domain.FeedbackLog;
-import com.sku.caloriechat.dto.MealSummaryRequestDto;
+import com.sku.caloriechat.dto.MealFeedbackRequestDto;
 import com.sku.caloriechat.service.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,15 +22,29 @@ public class FeedbackController {
     @PostMapping("/generate")
     @Operation(
             summary = "GPT 피드백 생성 및 저장",
-            description = "식단 요약(summary)을 기반으로 GPT에게 피드백을 받아 저장합니다."
+            description = "음식 목록과 식사 시각을 기반으로 GPT에게 피드백을 받아 저장합니다."
     )
     public ResponseEntity<String> generateFeedback(
             @RequestParam Long userId,
-            @RequestBody MealSummaryRequestDto requestDto
+            @RequestBody MealFeedbackRequestDto requestDto
     ) {
-        feedbackService.generateAndSaveFeedback(userId, requestDto.getSummary());
+        feedbackService.generateAndSaveFeedback(userId, requestDto);
         return ResponseEntity.ok("GPT feedback generated and saved.");
     }
+
+    @PostMapping("/generate/from-meal")
+    @Operation(
+            summary = "저장된 식단 기반 GPT 피드백 생성",
+            description = "mealId를 기반으로 DB에서 식단을 조회하여 GPT 피드백을 생성하고 반환합니다."
+    )
+    public ResponseEntity<String> generateFeedbackFromMeal(
+            @RequestParam Long userId,
+            @RequestParam Long mealId
+    ) {
+        String feedback = feedbackService.generateFeedbackFromMeal(userId, mealId);
+        return ResponseEntity.ok(feedback);
+    }
+
 
     @PostMapping("/manual")
     @Operation(
