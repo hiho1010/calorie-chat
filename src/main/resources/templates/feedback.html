@@ -1,185 +1,3 @@
-<!--
-&lt;!&ndash; templates/feedback.html &ndash;&gt;
-<section th:fragment="content" class="row justify-content-center mt-5">
-    <div class="col-md-10">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <h2 class="mb-4 text-center text-primary-green">GPT 피드백</h2>
-
-                &lt;!&ndash; 버튼 &ndash;&gt;
-                <div class="d-flex justify-content-between mb-4">
-                    <button class="btn btn-primary-green" id="generateBtn">GPT 피드백 생성</button>
-                </div>
-
-                &lt;!&ndash; 오늘자 GPT 피드백 &ndash;&gt;
-                <div id="feedbackContent" class="mb-4">
-                    <p class="text-muted">GPT의 분석을 기다리고 있어요...</p>
-                </div>
-
-                &lt;!&ndash; 캘린더 이동 버튼 &ndash;&gt;
-                <div class="text-center my-3">
-                    <button class="btn btn-sm btn-outline-primary me-2" id="prevMonthBtn">◀ 이전 달</button>
-                    <button class="btn btn-sm btn-outline-primary" id="nextMonthBtn">다음 달 ▶</button>
-                </div>
-                <div id="calendarFeedback"></div>
-
-                &lt;!&ndash; 다시 보기 &ndash;&gt;
-                <div class="text-center mt-3">
-                    <button class="btn btn-primary-green" id="refreshBtn">다시 보기</button>
-                </div>
-
-                &lt;!&ndash; 홈 링크 &ndash;&gt;
-                <div class="text-center mt-3">
-                    <a th:href="@{/}" class="text-decoration-none">← 홈으로 돌아가기</a>
-                </div>
-
-                &lt;!&ndash; userId 저장 &ndash;&gt;
-                <div id="__meta" th:data-userid="${userId}" class="d-none"></div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const userId = document.getElementById("__meta").dataset.userid;
-        const feedbackContainer = document.getElementById("feedbackContent");
-        const calendarDiv = document.getElementById("calendarFeedback");
-        const refreshBtn = document.getElementById("refreshBtn");
-        const generateBtn = document.getElementById("generateBtn");
-        let calendarYear = new Date().getFullYear();
-        let calendarMonth = new Date().getMonth();
-
-        async function loadTodayFeedback() {
-            try {
-                const res = await fetch(`/api/feedback/${userId}/today`);
-                if (res.status === 404) {
-                    const data = await res.json();
-                    feedbackContainer.innerHTML = `
-            <div class="alert alert-warning">
-              ${data.message}<br>
-              GPT 피드백을 먼저 생성해주세요.
-            </div>`;
-                    return;
-                }
-                if (!res.ok) throw new Error("서버 응답 오류");
-
-                const data = await res.json();
-                feedbackContainer.innerHTML = `
-          <h5 class="text-success">가장 최근에 받은 피드백</h5>
-          <p class="mt-3">${data.feedback}</p>
-          <p class="text-end text-muted small">${new Date(data.createdAt).toLocaleString()}</p>`;
-            } catch (err) {
-                feedbackContainer.innerHTML = `
-          <div class="alert alert-danger">
-            피드백을 불러오는 중 오류가 발생했습니다.
-          </div>`;
-                console.error(err);
-            }
-        }
-
-        async function generateFeedback() {
-            try {
-                const res = await fetch(`/api/feedback/generate/from-today?userId=${userId}`, {
-                    method: 'POST'
-                });
-
-                if (!res.ok) {
-                    const error = await res.json();
-                    throw new Error(error.message || "서버 오류");
-                }
-
-                const text = await res.text();
-                feedbackContainer.innerHTML = `
-            <h5 class="text-success">GPT 피드백이 생성되었습니다</h5>
-            <p class="mt-3">${text}</p>
-            <p class="text-muted small">※ 오늘 등록된 식단을 기준으로 생성되었습니다.</p>
-        `;
-
-                await loadCalendarFeedback(); // 새 피드백 생겼으니 달력 갱신도 추가
-            } catch (err) {
-                feedbackContainer.innerHTML = `
-            <div class="alert alert-danger">
-                피드백 생성 실패: ${err.message}
-            </div>`;
-                console.error(err);
-            }
-        }
-
-        async function loadCalendarFeedback() {
-            try {
-                const res = await fetch(`/api/feedback/${userId}`);
-                if (!res.ok) throw new Error("조회 실패");
-                const data = await res.json();
-                renderFeedbackCalendar(calendarYear, calendarMonth, data);
-                calendarDiv.classList.remove("d-none");
-            } catch (err) {
-                calendarDiv.innerHTML = `<div class="alert alert-danger">달력 데이터를 불러오는 중 오류가 발생했습니다.</div>`;
-                console.error(err);
-            }
-        }
-
-        function renderFeedbackCalendar(year, month, data) {
-            const grouped = {};
-            data.forEach(fb => {
-                const date = new Date(fb.createdAt);
-                const key = date.toISOString().split("T")[0];
-                grouped[key] = grouped[key] || [];
-                grouped[key].push(fb.feedback);
-            });
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const lastDate = new Date(year, month + 1, 0).getDate();
-            let html = `<h5 class="text-primary mb-3">${year}년 ${month + 1}월 GPT 피드백</h5>`;
-            html += `<div class="row text-center fw-bold border-bottom pb-2">
-        <div class="col">일</div><div class="col">월</div><div class="col">화</div>
-        <div class="col">수</div><div class="col">목</div><div class="col">금</div><div class="col">토</div>
-      </div><div class="row text-center">`;
-
-            for (let i = 0; i < firstDay; i++) html += `<div class="col border py-3 bg-light"></div>`;
-
-            for (let d = 1; d <= lastDate; d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const feedbacks = grouped[dateStr];
-                html += `<div class="col border py-2" style="height:100px; overflow:auto;">
-          <div><strong>${d}</strong></div>`;
-                if (feedbacks) {
-                    html += `<div class="text-success small mt-1">${feedbacks.join("<br>")}</div>`;
-                } else {
-                    html += `<div class="text-muted small mt-1">-</div>`;
-                }
-                html += `</div>`;
-                if ((firstDay + d) % 7 === 0) html += `</div><div class="row text-center">`;
-            }
-            html += `</div>`;
-            calendarDiv.innerHTML = html;
-        }
-
-        document.getElementById("prevMonthBtn").addEventListener("click", () => {
-            if (&#45;&#45;calendarMonth < 0) {
-                calendarMonth = 11;
-                calendarYear&#45;&#45;;
-            }
-            loadCalendarFeedback();
-        });
-
-        document.getElementById("nextMonthBtn").addEventListener("click", () => {
-            if (++calendarMonth > 11) {
-                calendarMonth = 0;
-                calendarYear++;
-            }
-            loadCalendarFeedback();
-        });
-
-        refreshBtn.addEventListener("click", loadTodayFeedback);
-        generateBtn.addEventListener("click", generateFeedback);
-
-        loadTodayFeedback();
-        loadCalendarFeedback();
-        loadCalendarFeedback(); // ✅ 바로 로딩되도록 변경
-    });
-</script>
--->
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -226,9 +44,6 @@
         <div id="feedback-calendar"></div>
     </div>
 
-    <footer class="text-center mt-5 text-muted small">
-        © 2025 CalorieChat — 건강한 삶을 응원합니다!
-    </footer>
 </div>
 
 <!-- Feedback Modal -->
@@ -252,26 +67,36 @@
     let currentYear = new Date().getFullYear();
     let currentMonth = new Date().getMonth();
 
-    fetch(`/api/users/${userId}/meals/today/detail`)
+    fetch(`/api/users/${userId}/meals/today/all`)
         .then(res => res.ok ? res.json() : Promise.reject("no meal"))
-        .then(data => {
-            mealId = data.mealId;
-            document.getElementById("meal-info").innerHTML = `
-                <p><strong>식사 시간:</strong> ${data.mealTime}</p>
-                <p><strong>총 칼로리:</strong> ${data.totalCalories} kcal</p>
-                <ul class="list-group mt-3">
-                    ${data.foodItems.map(item =>
-                `<li class="list-group-item d-flex justify-content-between align-items-center">
-                        ${item.name}
-                        <span>${item.calories} kcal × ${item.quantity}</span>
-                    </li>`).join('')}
-                </ul>`;
-            fetchTodayFeedback();
+        .then(meals => {
+            const mealInfoBox = document.getElementById("meal-info");
+            mealInfoBox.innerHTML = ""; // 기존 내용 초기화
+
+            meals.forEach(data => {
+                const mealHtml = `
+                <div class="mb-4">
+                    <p><strong>식사 시간:</strong> ${data.mealTime}</p>
+                    <p><strong>총 칼로리:</strong> ${data.totalCalories} kcal</p>
+                    <ul class="list-group mt-3">
+                        ${data.foodItems.map(item =>
+                    `<li class="list-group-item d-flex justify-content-between align-items-center">
+                                ${item.name}
+                                <span>${item.calories} kcal × ${item.quantity}</span>
+                            </li>`).join('')}
+                    </ul>
+                </div>
+            `;
+                mealInfoBox.innerHTML += mealHtml;
+            });
+
+            fetchTodayFeedback(); // 🍽 식단 정상 로딩 후 피드백도 호출
         })
         .catch(() => {
             document.getElementById("meal-info").innerHTML = `<div class="alert alert-warning">오늘 등록된 식단이 없습니다.</div>`;
             document.getElementById("generate-feedback").disabled = true;
         });
+
 
     function fetchTodayFeedback() {
         fetch(`/api/feedback/${userId}/today`)
@@ -346,32 +171,53 @@
         const firstDay = new Date(currentYear, currentMonth, 1).getDay();
         const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-        let html = `<div class="row text-center fw-bold border-bottom pb-2">
+        // 42칸(6주 × 7일) 고정 배열
+        const cells = Array.from({ length: 42 }, (_, i) => {
+            const day = i - firstDay + 1;
+            return day > 0 && day <= lastDate ? day : null;
+        });
+
+        let html = `
+        <div class="row text-center fw-bold border-bottom pb-2">
             <div class="col">일</div><div class="col">월</div><div class="col">화</div>
             <div class="col">수</div><div class="col">목</div><div class="col">금</div><div class="col">토</div>
-          </div><div class="row text-center">`;
+        </div>
+    `;
 
-        for (let i = 0; i < firstDay; i++) html += `<div class="col border py-3 bg-light"></div>`;
+        // 주 단위로만 row 생성 (실제 날짜가 하나라도 포함된 주만)
+        for (let i = 0; i < 42; i += 7) {
+            const week = cells.slice(i, i + 7);
+            const hasAnyDay = week.some(day => day !== null);
+            if (!hasAnyDay) continue; // 빈 주(예: 7칸 전부 null)는 렌더링 안함
 
-        for (let d = 1; d <= lastDate; d++) {
-            const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-            const feedbacks = grouped[dateStr];
-            html += `<div class="col border p-2" style="height:120px; font-size: 12px; overflow: hidden;">
-              <div><strong>${d}</strong></div>`;
-            if (feedbacks) {
-                feedbacks.forEach(f => {
-                    const short = f.length > 20 ? f.slice(0, 20) + "..." : f;
-                    html += `<div class="text-success small mt-1" style="cursor:pointer;" onclick="showModal('${f.replace(/'/g, "\\'")}')">${short}</div>`;
-                });
-            } else {
-                html += `<div class="text-muted small">-</div>`;
-            }
+            html += `<div class="row text-center">`;
+            week.forEach(day => {
+                if (day === null) {
+                    html += `<div class="col border bg-light py-3"></div>`;
+                } else {
+                    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const feedbacks = grouped[dateStr];
+                    html += `<div class="col border p-2 calendar-day" style="height: 150px; overflow-y:auto; white-space: pre-wrap; font-size: 14px;">
+                    <div><strong>${day}</strong></div>`;
+                    if (feedbacks) {
+                        feedbacks.forEach(f => {
+                            const short = f.length > 20 ? f.slice(0, 20) + "..." : f;
+                            html += `<div class="text-success small mt-1" style="cursor:pointer;" onclick="showModal(\`${f.replace(/`/g, '\\`')}\`)">${short}</div>`;
+                        });
+                    } else {
+                        html += `<div class="text-muted small">-</div>`;
+                    }
+                    html += `</div>`;
+                }
+            });
             html += `</div>`;
-            if ((firstDay + d) % 7 === 0) html += `</div><div class="row text-center">`;
         }
-        html += `</div>`;
+
         document.getElementById("feedback-calendar").innerHTML = html;
     }
+
+
+
 
     function showModal(feedbackText) {
         const modal = new bootstrap.Modal(document.getElementById('feedbackModal'));

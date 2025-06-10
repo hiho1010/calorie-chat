@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,5 +44,16 @@ public class MealController {
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(Map.of("message", "오늘 등록된 식단이 없습니다.")));
+    }
+
+    @GetMapping("/today/all")
+    @Operation(summary = "오늘의 식단 전체 조회", description = "오늘 등록한 식단 전체를 음식 목록과 함께 반환합니다.")
+    public ResponseEntity<?> getAllTodayMeals(@PathVariable int userId) {
+        List<TodayMealResponseDto> mealList = mealService.getAllTodayMealsWithItems(userId);
+        if (mealList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "오늘 등록된 식단이 없습니다."));
+        }
+        return ResponseEntity.ok(mealList);
     }
 }

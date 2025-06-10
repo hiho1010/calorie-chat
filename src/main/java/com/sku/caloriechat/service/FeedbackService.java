@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -140,27 +141,36 @@ public class FeedbackService {
     }
 
     // 오늘자 피드백 생성
-
     public String generateFeedbackFromTodayMeal(Long userId) {
         validateFeedbackRequestInterval(userId); // 🔒 요청 간격 제한
 
-        return mealDao.findLatestByUserIdAndDate(userId.intValue(), LocalDate.now())
-                .map(meal -> {
-                    try {
-                        List<FoodItem> foodItems = foodItemDao.findByMealId(meal.getMealId());
-                        List<FoodItemSaveDto> dtoList = foodItems.stream()
-                                .map(f -> new FoodItemSaveDto(f.getName(), f.getCalories(), f.getQuantity()))
-                                .collect(Collectors.toList());
+        List<Meal> todayMeals = mealDao.findAllByUserIdAndDate(userId.intValue(), LocalDate.now());
 
-                        String feedback = gptService.getFeedback(buildPrompt(meal.getEatenAt(), dtoList));
-                        saveFeedback(userId, feedback);
-                        return feedback;
+        if (todayMeals.isEmpty()) {
+            throw new IllegalStateException("오늘 등록된 식단이 없습니다.");
+        }
 
-                    } catch (SQLException e) {
-                        throw new RuntimeException("오늘 식단 기반 피드백 생성 중 오류 발생", e);
-                    }
-                })
-                .orElseThrow(() -> new IllegalStateException("오늘 등록된 식단이 없습니다."));
+        List<FoodItemSaveDto> allFoodItems = new ArrayList<>();
+
+        for (Meal meal : todayMeals) {
+            try {
+                List<FoodItem> foodItems = foodItemDao.findByMealId(meal.getMealId());
+                List<FoodItemSaveDto> dtoList = foodItems.stream()
+                        .map(f -> new FoodItemSaveDto(f.getName(), f.getCalories(), f.getQuantity()))
+                        .toList();
+                allFoodItems.addAll(dtoList);
+            } catch (SQLException e) {
+                throw new RuntimeException("식단 조회 중 오류 발생", e);
+            }
+        }
+
+        // 기준 시각은 가장 첫 번째 식단의 eatenAt (또는 지금 시각)
+        LocalDateTime eatenAt = todayMeals.get(0).getEatenAt(); // 또는 LocalDateTime.now()
+
+        String feedback = gptService.getFeedback(buildPrompt(eatenAt, allFoodItems));
+        saveFeedback(userId, feedback);
+        return feedback;
     }
+
 
 }
