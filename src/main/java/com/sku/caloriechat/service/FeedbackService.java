@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,15 +40,25 @@ public class FeedbackService {
 
     /** GPT로 피드백 생성 후 저장 (FoodItem 기반 수동 요청) */
     public void generateAndSaveFeedback(Long userId, MealFeedbackRequestDto requestDto) {
+        validateFeedbackRequestInterval(userId);  // 🔒 요청 간격 제한 체크
+
         String prompt = buildPrompt(requestDto.getEatenAt(), requestDto.getFoodItems());
         String feedback = gptService.getFeedback(prompt);
         saveFeedback(userId, feedback);
     }
 
-    /** 저장된 mealId 기반 GPT 피드백 생성 */
+    //** 저장된 mealId 기반 GPT 피드백 생성 */
     public String generateFeedbackFromMeal(Long userId, Long mealId) {
+        validateFeedbackRequestInterval(userId);  // 🔒 시간 제한
+
         try {
             Meal meal = mealDao.findById(mealId.intValue());
+
+            // ✅ eatenAt 날짜가 오늘이 아닐 경우 예외 발생
+            if (!meal.getEatenAt().toLocalDate().equals(LocalDate.now())) {
+                throw new IllegalStateException("오늘 섭취한 식단에 대해서만 피드백을 요청할 수 있습니다.");
+            }
+
             List<FoodItem> foodItems = foodItemDao.findByMealId(mealId.intValue());
 
             List<FoodItemSaveDto> dtoList = foodItems.stream()
@@ -65,6 +76,19 @@ public class FeedbackService {
         } catch (SQLException e) {
             throw new RuntimeException("식단 기반 피드백 생성 중 오류 발생", e);
         }
+    }
+
+
+    /** 피드백 요청 간 간격 제한 (30분) */
+    private void validateFeedbackRequestInterval(Long userId) {
+        feedbackDao.findLatestByUserId(userId).ifPresent(latest -> {
+            LocalDateTime lastTime = latest.getCreatedAt();
+            Duration gap = Duration.between(lastTime, LocalDateTime.now());
+
+            if (gap.toMinutes() < 5) {
+                throw new IllegalStateException("마지막 피드백 요청 후 5분이 지나야 새로운 피드백을 받을 수 있습니다.");
+            }
+        });
     }
 
 
@@ -114,4 +138,29 @@ public class FeedbackService {
     public FeedbackLog getTodayFeedback(Long userId) {
         return feedbackDao.findByUserIdAndDate(userId, LocalDate.now()).orElse(null);
     }
+
+    // 오늘자 피드백 생성
+
+    public String generateFeedbackFromTodayMeal(Long userId) {
+        validateFeedbackRequestInterval(userId); // 🔒 요청 간격 제한
+
+        return mealDao.findLatestByUserIdAndDate(userId.intValue(), LocalDate.now())
+                .map(meal -> {
+                    try {
+                        List<FoodItem> foodItems = foodItemDao.findByMealId(meal.getMealId());
+                        List<FoodItemSaveDto> dtoList = foodItems.stream()
+                                .map(f -> new FoodItemSaveDto(f.getName(), f.getCalories(), f.getQuantity()))
+                                .collect(Collectors.toList());
+
+                        String feedback = gptService.getFeedback(buildPrompt(meal.getEatenAt(), dtoList));
+                        saveFeedback(userId, feedback);
+                        return feedback;
+
+                    } catch (SQLException e) {
+                        throw new RuntimeException("오늘 식단 기반 피드백 생성 중 오류 발생", e);
+                    }
+                })
+                .orElseThrow(() -> new IllegalStateException("오늘 등록된 식단이 없습니다."));
+    }
+
 }
