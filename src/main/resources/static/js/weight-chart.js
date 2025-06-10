@@ -1,3 +1,4 @@
+// /static/js/weight-chart.js
 document.addEventListener("DOMContentLoaded", () => {
   const userId = document.getElementById("__meta")?.dataset.userid;
   if (!userId) return;
@@ -6,11 +7,22 @@ document.addEventListener("DOMContentLoaded", () => {
   .then(res => res.json())
   .then(data => {
     if (!data.length) {
-      document.getElementById("weightChart").replaceWith("몸무게 기록이 없습니다.");
+      document.getElementById("weightChart")
+      .replaceWith("몸무게 기록이 없습니다.");
       return;
     }
 
-    const labels = data.map(log => new Date(log.loggedAt).toLocaleDateString());
+    // 1) date 필드가 "2025-06-08" 같은 형태로 들어오므로, 직접 파싱
+    const labels = data.map(log => {
+      const [y, m, d] = log.date.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      // "6월 8일" 형태로
+      return dt.toLocaleDateString('ko-KR', {
+        month: 'numeric',
+        day: 'numeric'
+      });
+    });
+
     const values = data.map(log => log.weight);
 
     const ctx = document.getElementById("weightChart").getContext("2d");
@@ -33,8 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
           legend: { display: true }
         },
         scales: {
+          x: {
+            title: { display: true, text: '측정일' }
+          },
           y: {
-            title: { display: true, text: "kg" },
+            title: { display: true, text: 'kg' },
             beginAtZero: false
           }
         }

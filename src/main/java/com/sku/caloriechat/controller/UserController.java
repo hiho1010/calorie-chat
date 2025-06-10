@@ -61,6 +61,7 @@ public class UserController {
         // 🔽 여기 두 줄을 추가하세요
         session.setAttribute("LOGIN_USER_ID",   user.getUserId());
         session.setAttribute("LOGIN_USER_NAME", user.getUserName()); // null 가능
+        session.setAttribute("LOGIN_USER_GOAL_WEIGHT", user.getGoalWeight());
 
         // ⑤ 클라이언트에 응답
         return ResponseEntity.ok(UserService.toResponse(user));
