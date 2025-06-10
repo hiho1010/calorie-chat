@@ -1,38 +1,47 @@
-// static/js/weight-chart.js
-document.addEventListener('DOMContentLoaded', () => {
-
-  const meta   = document.getElementById('__meta');
-  const userId = meta?.dataset.userid;
-  if (!userId) return;      // 비로그인 또는 세션 만료
+document.addEventListener("DOMContentLoaded", () => {
+  const userId = document.getElementById("__meta")?.dataset.userid;
+  if (!userId) return;
 
   fetch(`/api/weight-log?userId=${userId}`)
-  .then(r => r.ok ? r.json() : Promise.reject())
-  .then(drawChart)
-  .catch(() => console.warn('몸무게 데이터를 불러올 수 없습니다.'));
-});
+  .then(res => res.json())
+  .then(data => {
+    if (!data.length) {
+      document.getElementById("weightChart").replaceWith("몸무게 기록이 없습니다.");
+      return;
+    }
 
-function drawChart(logs) {
-  if (!logs?.length) return;
+    const labels = data.map(log => new Date(log.loggedAt).toLocaleDateString());
+    const values = data.map(log => log.weight);
 
-  // 날짜순 정렬(오름차순)
-  logs.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  const labels = logs.map(l => l.date);
-  const data   = logs.map(l => l.weight);
-
-  new Chart(
-      document.getElementById('weightChart'),
-      {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: '몸무게(kg)',
-            data,
-            tension: 0.35,
-            fill: false
-          }]
+    const ctx = document.getElementById("weightChart").getContext("2d");
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: '몸무게 (kg)',
+          data: values,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 2,
+          tension: 0.3,
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true }
+        },
+        scales: {
+          y: {
+            title: { display: true, text: "kg" },
+            beginAtZero: false
+          }
         }
       }
-  );
-}
+    });
+  })
+  .catch(err => {
+    console.error("차트 데이터를 불러오지 못했습니다", err);
+  });
+});
