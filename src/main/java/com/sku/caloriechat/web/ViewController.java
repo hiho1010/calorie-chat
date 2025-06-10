@@ -57,9 +57,23 @@ public class ViewController {
         model.addAttribute("body", "home");
         return "layout/base";
     }
+
     @PostMapping("/logout")
     public String logout(HttpSession session){
         session.invalidate();
         return "redirect:/login";
+    }
+
+    @GetMapping("/feedback")
+    public String feedbackView(Model model, HttpSession session) {
+        Long userId  = (Long) session.getAttribute("LOGIN_USER_ID");
+        String name  = (String) session.getAttribute("LOGIN_USER_NAME");
+
+        model.addAttribute("userId", userId);
+        model.addAttribute("userName", name);
+        model.addAttribute("pageTitle", "GPT 피드백");
+        model.addAttribute("body", "feedback"); // templates/feedback.html 을 렌더링
+
+        return "layout/base";
     }
 }

@@ -10,9 +10,10 @@
   <!-- ↓↓↓ userId 값을 data-attribute 로 내려서 JS 가 읽음 -->
   <div id="__meta" th:data-userid="${userId}"></div>
 
-  <!-- ===== “새 기록” 버튼 ===== -->
-  <div class="mt-4">
+  <!-- ===== 새 기록 버튼 & GPT 피드백 버튼 ===== -->
+  <div class="mt-4 d-flex justify-content-between">
     <a class="btn btn-primary-green" th:href="@{/weight-log/form}">새 몸무게 기록</a>
+    <a class="btn btn-outline-secondary" th:href="@{/feedback}">GPT 피드백 받기</a>
   </div>
 
   <!-- ===== 로그인 후 인사말 & 식단 CTA ===== -->
@@ -21,7 +22,45 @@
     <a class="btn btn-primary-green btn-lg mt-3" th:href="@{/meals/new}">식단 등록하기</a>
   </div>
 
+  <!-- 하루 권장 칼로리 보기 버튼 -->
+  <div class="mt-4">
+    <button class="btn btn-outline-primary" id="targetCalBtn">하루 권장 칼로리 보기</button>
+  </div>
+
+  <!-- 칼로리 결과 표시 영역 -->
+  <div id="targetCalResult" class="mt-3"></div>
+
   <!-- ===== Chart.js & 전용 스크립트 ===== -->
   <script src="/webjars/chartjs/4.4.2/dist/chart.umd.js"></script>
   <script src="/js/weight-chart.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const userId = document.getElementById("__meta").dataset.userid;
+      const calBtn = document.getElementById("targetCalBtn");
+      const resultDiv = document.getElementById("targetCalResult");
+
+      calBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch(`/api/profile/target-calories?userId=${userId}`);
+          if (!res.ok) throw new Error("칼로리 계산 실패");
+
+          const data = await res.json();
+          resultDiv.innerHTML = `
+          <div class="alert alert-success">
+            <strong>하루 권장 섭취 칼로리:</strong> ${data.targetCalories} kcal
+          </div>
+        `;
+        } catch (err) {
+          resultDiv.innerHTML = `
+          <div class="alert alert-danger">
+            권장 칼로리를 불러오는 중 오류가 발생했습니다.
+          </div>
+        `;
+          console.error(err);
+        }
+      });
+    });
+  </script>
+
 </section>

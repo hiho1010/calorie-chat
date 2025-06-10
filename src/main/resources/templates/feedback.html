@@ -1,0 +1,167 @@
+<!-- templates/feedback.html -->
+<section th:fragment="content" class="row justify-content-center mt-5">
+    <div class="col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="mb-4 text-center text-primary-green">GPT 피드백</h2>
+
+                <!-- 버튼 -->
+                <div class="d-flex justify-content-between mb-4">
+                    <button class="btn btn-primary-green" id="generateBtn">GPT 피드백 생성</button>
+                </div>
+
+                <!-- 오늘자 GPT 피드백 -->
+                <div id="feedbackContent" class="mb-4">
+                    <p class="text-muted">GPT의 분석을 기다리고 있어요...</p>
+                </div>
+
+                <!-- 캘린더 이동 버튼 -->
+                <div class="text-center my-3">
+                    <button class="btn btn-sm btn-outline-primary me-2" id="prevMonthBtn">◀ 이전 달</button>
+                    <button class="btn btn-sm btn-outline-primary" id="nextMonthBtn">다음 달 ▶</button>
+                </div>
+                <div id="calendarFeedback"></div>
+
+                <!-- 다시 보기 -->
+                <div class="text-center mt-3">
+                    <button class="btn btn-primary-green" id="refreshBtn">다시 보기</button>
+                </div>
+
+                <!-- 홈 링크 -->
+                <div class="text-center mt-3">
+                    <a th:href="@{/}" class="text-decoration-none">← 홈으로 돌아가기</a>
+                </div>
+
+                <!-- userId 저장 -->
+                <div id="__meta" th:data-userid="${userId}" class="d-none"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const userId = document.getElementById("__meta").dataset.userid;
+        const feedbackContainer = document.getElementById("feedbackContent");
+        const calendarDiv = document.getElementById("calendarFeedback");
+        const refreshBtn = document.getElementById("refreshBtn");
+        const generateBtn = document.getElementById("generateBtn");
+        let calendarYear = new Date().getFullYear();
+        let calendarMonth = new Date().getMonth();
+
+        async function loadTodayFeedback() {
+            try {
+                const res = await fetch(`/api/feedback/${userId}/today`);
+                if (res.status === 404) {
+                    const data = await res.json();
+                    feedbackContainer.innerHTML = `
+            <div class="alert alert-warning">
+              ${data.message}<br>
+              GPT 피드백을 먼저 생성해주세요.
+            </div>`;
+                    return;
+                }
+                if (!res.ok) throw new Error("서버 응답 오류");
+
+                const data = await res.json();
+                feedbackContainer.innerHTML = `
+          <h5 class="text-success">가장 최근에 받은 피드백</h5>
+          <p class="mt-3">${data.feedback}</p>
+          <p class="text-end text-muted small">${new Date(data.createdAt).toLocaleString()}</p>`;
+            } catch (err) {
+                feedbackContainer.innerHTML = `
+          <div class="alert alert-danger">
+            피드백을 불러오는 중 오류가 발생했습니다.
+          </div>`;
+                console.error(err);
+            }
+        }
+
+        async function generateFeedback() {
+            try {
+                const res = await fetch(`/api/feedback/generate/from-meal?userId=${userId}&mealId=1`, {
+                    method: 'POST'
+                });
+                const text = await res.text();
+                feedbackContainer.innerHTML = `
+          <h5 class="text-success">GPT 피드백이 생성되었습니다</h5>
+          <p class="mt-3">${text}</p>`;
+            } catch (err) {
+                feedbackContainer.innerHTML = `<div class="alert alert-danger">피드백 생성 실패</div>`;
+                console.error(err);
+            }
+        }
+
+        async function loadCalendarFeedback() {
+            try {
+                const res = await fetch(`/api/feedback/${userId}`);
+                if (!res.ok) throw new Error("조회 실패");
+                const data = await res.json();
+                renderFeedbackCalendar(calendarYear, calendarMonth, data);
+                calendarDiv.classList.remove("d-none");
+            } catch (err) {
+                calendarDiv.innerHTML = `<div class="alert alert-danger">달력 데이터를 불러오는 중 오류가 발생했습니다.</div>`;
+                console.error(err);
+            }
+        }
+
+        function renderFeedbackCalendar(year, month, data) {
+            const grouped = {};
+            data.forEach(fb => {
+                const date = new Date(fb.createdAt);
+                const key = date.toISOString().split("T")[0];
+                grouped[key] = grouped[key] || [];
+                grouped[key].push(fb.feedback);
+            });
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            let html = `<h5 class="text-primary mb-3">${year}년 ${month + 1}월 GPT 피드백</h5>`;
+            html += `<div class="row text-center fw-bold border-bottom pb-2">
+        <div class="col">일</div><div class="col">월</div><div class="col">화</div>
+        <div class="col">수</div><div class="col">목</div><div class="col">금</div><div class="col">토</div>
+      </div><div class="row text-center">`;
+
+            for (let i = 0; i < firstDay; i++) html += `<div class="col border py-3 bg-light"></div>`;
+
+            for (let d = 1; d <= lastDate; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const feedbacks = grouped[dateStr];
+                html += `<div class="col border py-2" style="height:100px; overflow:auto;">
+          <div><strong>${d}</strong></div>`;
+                if (feedbacks) {
+                    html += `<div class="text-success small mt-1">${feedbacks.join("<br>")}</div>`;
+                } else {
+                    html += `<div class="text-muted small mt-1">-</div>`;
+                }
+                html += `</div>`;
+                if ((firstDay + d) % 7 === 0) html += `</div><div class="row text-center">`;
+            }
+            html += `</div>`;
+            calendarDiv.innerHTML = html;
+        }
+
+        document.getElementById("prevMonthBtn").addEventListener("click", () => {
+            if (--calendarMonth < 0) {
+                calendarMonth = 11;
+                calendarYear--;
+            }
+            loadCalendarFeedback();
+        });
+
+        document.getElementById("nextMonthBtn").addEventListener("click", () => {
+            if (++calendarMonth > 11) {
+                calendarMonth = 0;
+                calendarYear++;
+            }
+            loadCalendarFeedback();
+        });
+
+        refreshBtn.addEventListener("click", loadTodayFeedback);
+        generateBtn.addEventListener("click", generateFeedback);
+
+        loadTodayFeedback();
+        loadCalendarFeedback();
+        loadCalendarFeedback(); // ✅ 바로 로딩되도록 변경
+    });
+</script>
