@@ -6,10 +6,12 @@ import com.sku.caloriechat.service.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/feedback")
@@ -73,7 +75,13 @@ public class FeedbackController {
             summary = "오늘자 피드백 조회",
             description = "특정 유저의 오늘자 GPT 피드백을 단건으로 조회합니다."
     )
-    public ResponseEntity<FeedbackLog> getTodayFeedback(@PathVariable Long userId) {
-        return ResponseEntity.ok(feedbackService.getTodayFeedback(userId));
+    public ResponseEntity<?> getTodayFeedback(@PathVariable Long userId) {
+        FeedbackLog log = feedbackService.getTodayFeedback(userId);
+        if (log == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "오늘자 피드백이 없습니다."));
+        }
+        return ResponseEntity.ok(log);
     }
+
 }
