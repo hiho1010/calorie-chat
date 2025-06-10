@@ -83,6 +83,16 @@ public class MealDao {
                 .stream().findFirst();
     }
 
+    public List<Meal> findAllByUserIdAndDate(int userId, LocalDate date) {
+        String sql = """
+        SELECT * FROM meal
+        WHERE user_id = ? AND DATE(eaten_at) = ?
+        ORDER BY eaten_at ASC
+    """;
+
+        return jdbc.query(sql, mealRowMapper, userId, Date.valueOf(date));
+    }
+
     /** Meal 매핑 */
     private final RowMapper<Meal> mealRowMapper = (rs, rowNum) -> {
         Meal meal = new Meal();

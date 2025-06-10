@@ -9,6 +9,7 @@ import com.sku.caloriechat.dto.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -95,6 +96,41 @@ public class MealService {
             e.printStackTrace(); // 또는 log.error(...)
             return Optional.empty();
         }
+    }
+
+    // 오늘 날짜 식단 전체를 DTO로 변환
+
+    public List<TodayMealResponseDto> getAllTodayMealsWithItems(int userId) {
+        List<Meal> meals = mealDao.findAllByUserIdAndDate(userId, LocalDate.now());
+
+        List<TodayMealResponseDto> results = new ArrayList<>();
+
+        for (Meal meal : meals) {
+            try {
+                List<FoodItem> foodItems = foodItemDao.findByMealId(meal.getMealId());
+                List<FoodItemSaveDto> itemDtos = foodItems.stream()
+                        .map(fi -> new FoodItemSaveDto(
+                                fi.getName(),
+                                fi.getCalories(),
+                                fi.getQuantity()
+                        ))
+                        .toList();
+
+                TodayMealResponseDto dto = new TodayMealResponseDto(
+                        meal.getMealId(),
+                        meal.getMealTime(),
+                        meal.getEatenAt(),
+                        meal.getTotalCalories(),
+                        itemDtos
+                );
+
+                results.add(dto);
+            } catch (SQLException e) {
+                throw new RuntimeException("음식 항목 조회 실패", e);
+            }
+        }
+
+        return results;
     }
 
 

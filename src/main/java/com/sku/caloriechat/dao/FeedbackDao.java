@@ -42,16 +42,19 @@ public class FeedbackDao {
         return jdbc.query(sql, feedbackLogRowMapper, userId);
     }
 
-    /** 유저 ID + 날짜 기준으로 피드백 조회 */
+    /** 유저 ID + 날짜 기준으로 피드백 조회 1건만 */
     public Optional<FeedbackLog> findByUserIdAndDate(Long userId, LocalDate date) {
         String sql = """
-            SELECT * FROM feedback_log
-            WHERE user_id = ? AND date = ?
-        """;
+        SELECT * FROM feedback_log
+        WHERE user_id = ? AND date = ?
+        ORDER BY created_at DESC
+        LIMIT 1
+    """;
 
         return jdbc.query(sql, feedbackLogRowMapper, userId, date)
                 .stream().findFirst();
     }
+
 
     /** 유저 ID 기준 가장 최근 피드백 조회 (created_at 기준 내림차순 LIMIT 1) */
     public Optional<FeedbackLog> findLatestByUserId(Long userId) {
