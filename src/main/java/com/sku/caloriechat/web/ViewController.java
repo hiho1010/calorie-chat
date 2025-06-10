@@ -66,8 +66,8 @@ public class ViewController {
 
     @GetMapping("/feedback")
     public String feedbackView(Model model, HttpSession session) {
-        Long userId  = (Long) session.getAttribute("LOGIN_USER_ID");
-        String name  = (String) session.getAttribute("LOGIN_USER_NAME");
+        Long userId = (Long) session.getAttribute("LOGIN_USER_ID");
+        String name = (String) session.getAttribute("LOGIN_USER_NAME");
 
         model.addAttribute("userId", userId);
         model.addAttribute("userName", name);

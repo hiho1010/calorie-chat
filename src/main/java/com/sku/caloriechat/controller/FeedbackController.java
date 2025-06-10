@@ -34,19 +34,35 @@ public class FeedbackController {
         return ResponseEntity.ok("GPT feedback generated and saved.");
     }
 
+    @PostMapping("/generate/from-today")
+    @Operation(
+            summary = "오늘 등록된 식단 기반 GPT 피드백 생성",
+            description = "오늘 날짜의 가장 최근 식단을 기준으로 GPT 피드백을 생성하고 반환합니다."
+    )
+    public ResponseEntity<String> generateFeedbackFromTodayMeal(@RequestParam Long userId) {
+        String feedback = feedbackService.generateFeedbackFromTodayMeal(userId);
+        return ResponseEntity.ok(feedback);
+    }
+
     @PostMapping("/generate/from-meal")
     @Operation(
             summary = "저장된 식단 기반 GPT 피드백 생성",
             description = "mealId를 기반으로 DB에서 식단을 조회하여 GPT 피드백을 생성하고 반환합니다."
     )
-    public ResponseEntity<String> generateFeedbackFromMeal(
+    public ResponseEntity<?> generateFeedbackFromMeal(
             @RequestParam Long userId,
             @RequestParam Long mealId
     ) {
-        String feedback = feedbackService.generateFeedbackFromMeal(userId, mealId);
-        return ResponseEntity.ok(feedback);
+        try {
+            String feedback = feedbackService.generateFeedbackFromMeal(userId, mealId);
+            return ResponseEntity.ok(feedback);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "서버 오류가 발생했습니다."));
+        }
     }
-
 
     @PostMapping("/manual")
     @Operation(
@@ -83,5 +99,4 @@ public class FeedbackController {
         }
         return ResponseEntity.ok(log);
     }
-
 }
