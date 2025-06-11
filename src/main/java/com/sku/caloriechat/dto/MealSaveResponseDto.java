@@ -1,5 +1,6 @@
 package com.sku.caloriechat.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,5 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MealSaveResponseDto {
-    private int mealId;        // 저장된 PK 반환
+
+    @Schema(description = "식단 ID", example = "123")
+    private int mealId;
 }
