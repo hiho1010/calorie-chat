@@ -4,6 +4,8 @@ import com.sku.caloriechat.domain.User;
 import com.sku.caloriechat.dto.*;
 import com.sku.caloriechat.service.UserAuthService;
 import com.sku.caloriechat.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,33 +22,31 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@Tag(name = "User", description = "회원 관련 API")
 public class UserController {
 
     private final UserService     userService;
     private final UserAuthService authService;
 
-    /* ───── 회원가입 ───── */
+    @Operation(summary = "회원가입", description = "이메일과 비밀번호로 회원가입을 진행합니다.")
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> register(
         @RequestBody @Valid UserRegisterRequestDto dto) {
         return ResponseEntity.ok(userService.register(dto));
     }
 
-    /* ───── 로그인 & 세션 ───── */
+    @Operation(summary = "로그인", description = "이메일과 비밀번호를 통해 로그인합니다.")
     @PostMapping("/login")
     public ResponseEntity<UserResponseDto> login(@RequestBody @Valid UserLoginRequestDto dto,
         HttpServletRequest req) {
 
-        // ① 아이디·비밀번호 검증
         User user = userService.authenticate(dto);
 
-        // ② Principal 생성 (권한이 필요하면 .roles("USER") 등 지정)
         UserDetails principal = org.springframework.security.core.userdetails.User
             .withUsername(user.getEmail())
             .password(user.getPassword())
             .build();
 
-        // ③ Authentication & SecurityContext
         Authentication auth =
             new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
 
@@ -54,37 +54,34 @@ public class UserController {
         context.setAuthentication(auth);
         SecurityContextHolder.setContext(context);
 
-        // ④ 세션에 SecurityContext + **추가 정보** 저장
         HttpSession session = req.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
 
-        // 🔽 여기 두 줄을 추가하세요
         session.setAttribute("LOGIN_USER_ID",   user.getUserId());
-        session.setAttribute("LOGIN_USER_NAME", user.getUserName()); // null 가능
+        session.setAttribute("LOGIN_USER_NAME", user.getUserName());
         session.setAttribute("LOGIN_USER_GOAL_WEIGHT", user.getGoalWeight());
 
-        // ⑤ 클라이언트에 응답
         return ResponseEntity.ok(UserService.toResponse(user));
     }
 
-    /* ───── 로그아웃 ───── */
+    @Operation(summary = "로그아웃", description = "현재 세션에서 로그아웃합니다.")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpSession session) {
-        authService.logout(session);           // 세션·SecurityContext 제거
+        authService.logout(session);
         return ResponseEntity
-            .status(303)                   // SEE_OTHER
-            .header("Location", "/login")  // 브라우저에 /login 으로 이동 지시
+            .status(303)
+            .header("Location", "/login")
             .build();
     }
 
-    /* ───── 내 프로필(조회) ───── */
+    @Operation(summary = "내 정보 조회", description = "세션을 기반으로 로그인한 사용자의 정보를 반환합니다.")
     @GetMapping("/me")
     public ResponseEntity<UserResponseDto> me(HttpSession session) {
         return ResponseEntity.ok(
             UserService.toResponse(authService.currentUser(session)));
     }
 
-    /* ───── 프로필 업데이트(닉네임·신체치수 등) ───── */
+    @Operation(summary = "프로필 업데이트", description = "신체 정보 및 닉네임 등 프로필을 수정합니다.")
     @PatchMapping("/profile")
     public void updateProfile(@RequestBody UserProfileUpdateRequestDto dto,
         HttpSession session) {

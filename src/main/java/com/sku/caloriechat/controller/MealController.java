@@ -3,6 +3,9 @@ package com.sku.caloriechat.controller;
 import com.sku.caloriechat.dto.*;
 import com.sku.caloriechat.service.MealService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,14 @@ public class MealController {
     private final MealService mealService;
 
     @PostMapping
+    @Operation(
+        summary = "식단 등록",
+        description = "사용자가 식단을 등록합니다.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "식단 등록 성공", content = @Content(schema = @Schema(implementation = MealSaveResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content)
+        }
+    )
     public ResponseEntity<MealSaveResponseDto> createMeal(
         @PathVariable int userId,
         @RequestBody MealSaveRequestDto request) throws Exception {
