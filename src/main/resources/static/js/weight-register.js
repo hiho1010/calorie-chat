@@ -17,23 +17,24 @@ document.addEventListener("DOMContentLoaded", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, date, weight })
     })
-    .then(res => {
-      if (!res.ok) throw new Error("저장에 실패했습니다.");
-      return res.json();
-    })
-    .then(saved => {
-      // (선택) 차트에 바로 반영하고 싶다면:
-      if (window.weightChart) {
-        window.weightChart.data.labels.push(new Date(saved.date).toLocaleDateString());
-        window.weightChart.data.datasets[0].data.push(saved.weight);
-        window.weightChart.update();
-      }
-      modal.hide();
-      form.reset();
-    })
-    .catch(err => {
-      console.error(err);
-      alert(err.message);
-    });
+        .then(res => {
+          if (!res.ok) throw new Error("저장에 실패했습니다.");
+
+          // 본문이 없으므로 json 파싱 안 함
+          return null;
+        })
+        .then(() => {
+          if (window.weightChart && window.weightChart.data) {
+            window.weightChart.data.labels.push(new Date(date).toLocaleDateString());
+            window.weightChart.data.datasets[0].data.push(weight);
+            window.weightChart.update();
+          }
+          modal.hide();
+          form.reset();
+        })
+        .catch(err => {
+          console.error(err);
+         // alert(err.message);
+        });
   });
 });
