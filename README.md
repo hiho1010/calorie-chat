@@ -1,8 +1,6 @@
 <div align="center">
 
 <!-- logo -->
-<img src="https://user-images.githubusercontent.com/80824750/208554611-f8277015-12e8-48d2-b2cc-d09d67f03c02.png" width="400"/>
-<img src="https://user-images.githubusercontent.com/80824750/208554558-490845c9-959a-4823-9003-350ec4d221bf.png" width="400"/>
 
 ### calorie-chat ✅
 
@@ -10,7 +8,7 @@
 <br/> [<img src="https://img.shields.io/badge/프로젝트 기간-2025.05.15~2025.06.20-green?style=flat&logo=&logoColor=white" />]()
 
 <a href="[https://youtu.be/EjwiYa5g3FM](https://www.youtube.com/watch?v=26vgIP5YOt8)" target="_blank">
-  <img src="https://img.youtube.com/vi/7w_DaNkVQ20/0.jpg" width="640" alt="Calorie-chat 유튜브 데모 영상">
+  <img src="칼로리 챗 아이콘" width="640" alt="Calorie-chat 유튜브 데모 영상">
 </a>
 <p>📺 Calorie-chat 프로젝트 시연 영상 보러가기</p>
 
@@ -63,19 +61,22 @@
 
 ### Front-end
 <div>
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/React.png?raw=true" width="80">
+<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Thymeleaf.png?raw=true" width="80">
+<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Bootstrap.png?raw=true" width="80">
+  <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/HTMLCSS.png?raw=true" width="80">
 </div>
 
+https://github.com/yewon-Noh/readme-template/blob/main/skills/AWSRDS.png
 <br />
-
 ### Back-end
 <div>
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Java.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringBoot.png?raw=true" width="80">
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringDataJPA.png?raw=true" width="80">
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Mysql.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Swagger.png?raw=true" width="80">
-  <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringSecurity.png?raw=true" width="80">
+<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Mysql.png?raw=true" width="80">
+<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/AWSRDS.png?raw=true" width="80">
+<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringSecurity.png?raw=true" width="80">
+<img src="https://github.com/user-attachments/assets/a831265c-0f27-40d7-bbed-9d1724a5734f?raw=true" width="80">
 </div>
 
 ### Infra
@@ -88,6 +89,7 @@
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Github.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Notion.png?raw=true" width="80">
 </div>
+
 
 <br />
 
