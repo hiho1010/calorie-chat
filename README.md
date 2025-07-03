@@ -66,7 +66,6 @@
   <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/HTMLCSS.png?raw=true" width="80">
 </div>
 
-https://github.com/yewon-Noh/readme-template/blob/main/skills/AWSRDS.png
 <br />
 ### Back-end
 <div>
@@ -76,7 +75,7 @@ https://github.com/yewon-Noh/readme-template/blob/main/skills/AWSRDS.png
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Mysql.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/AWSRDS.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringSecurity.png?raw=true" width="80">
-<img src="[raw=true](https://github.com/user-attachments/assets/c0eaa444-79a6-4c30-a506-e7480cbd60d7)" width="80">
+<img src="https://github.com/user-attachments/assets/c0eaa444-79a6-4c30-a506-e7480cbd60d7" width="80">
 </div>
 
 ### Infra
