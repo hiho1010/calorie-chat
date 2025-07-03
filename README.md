@@ -8,10 +8,9 @@
 <br/> [<img src="https://img.shields.io/badge/프로젝트 기간-2025.05.15~2025.06.20-green?style=flat&logo=&logoColor=white" />]()
 
 <a href="[https://youtu.be/EjwiYa5g3FM](https://www.youtube.com/watch?v=26vgIP5YOt8)" target="_blank">
-  <img src="칼로리 챗 아이콘" width="640" alt="Calorie-chat 유튜브 데모 영상">
+  <img src="https://github.com/hiho1010/calorie-chat/blob/main/src/main/resources/static/img/calorie_chat_logo.png" width="640" alt="Calorie-chat 유튜브 데모 영상">
 </a>
 <p>📺 Calorie-chat 프로젝트 시연 영상 보러가기</p>
-
 </div> 
 
 ## 📝 소개
