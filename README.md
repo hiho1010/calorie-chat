@@ -92,7 +92,26 @@
 <br />
 
 ## 💁‍♂️ 프로젝트 팀원
-|Backend/Frontend|Backend|
-|:---:|:---:|:---:|
-| ![](https://avatars.githubusercontent.com/u/39736916?v=4)| ![](https://avatars.githubusercontent.com/u/121941036?v=4)|
-|[이동국](https://github.com/leedongguk)|[류승환](https://github.com/Federico-15)|
+## 👻 Member
+
+<table>
+  <tr>
+    <td align="center"><strong>FE & BE</strong></td>
+    <td align="center"><strong>BE</strong></td>
+  </tr>
+  <tr>
+    <td align="center" width="150px">
+      <a href="https://github.com/Federico-15">
+        <img src="https://github.com/user-attachments/assets/0c559a2c-883b-4c5c-b07c-2578c26e2eaa" width="100px;" alt="류승환 프로필"/><br />
+        <sub><b>류승환🦈</b></sub>
+      </a>
+    </td>
+    <td align="center" width="150px">
+      <a href="깃허브 링크">
+        <img src="https://avatars.githubusercontent.com/u/39736916?v=4" width="100px;" alt="임희호 프로필"/><br />
+        <sub><b>임희호</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
