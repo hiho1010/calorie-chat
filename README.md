@@ -2,37 +2,41 @@
 
 <!-- logo -->
 
-### calorie-chat ✅
-
-### calorie-chat ✅
-
-### calorie-chat ✅
+### 🥗 calorie-chat ✅
 
 [<img src="https://img.shields.io/badge/-readme.md-important?style=flat&logo=google-chrome&logoColor=white" />]() 
 [<img src="https://img.shields.io/badge/-tech blog-blue?style=flat&logo=google-chrome&logoColor=white" />]() 
 [<img src="https://img.shields.io/badge/release-v0.0.0-yellow?style=flat&logo=google-chrome&logoColor=white" />]()  
 [<img src="https://img.shields.io/badge/프로젝트 기간-2025.05.15~2025.06.20-green?style=flat&logo=&logoColor=white" />]()
 
+<br/>
+
 <a href="https://www.youtube.com/watch?v=26vgIP5YOt8" target="_blank">
   <img src="https://github.com/hiho1010/calorie-chat/blob/main/src/main/resources/static/img/calorie_chat_logo.png" width="400" alt="Calorie-chat 유튜브 데모 영상">
 </a>
 
-📺 Calorie-chat 프로젝트 시연 영상 보러가기
+<br/>
 
+📺 <strong>Calorie-chat</strong> 프로젝트 시연 영상 보러가기
 
+</div>
 
-## 📝 소개
-사용자 몸무게와 키를 바탕으로 한 일일 목표칼로리 계산 및 생성형 AI를 활용한 식단 피드백
+---
 
-기능(간단)
-- 로그인/회원가입
-- 사용자 정보 입력
-- 일일 섭취 목표 칼로리 계산
-- 식단 등록
-- 식단에 대한 AI분석
-- AI 분석 레포트
+## 📝 프로젝트 소개
 
-<br />
+**Calorie-chat**은 사용자의 키와 몸무게를 바탕으로 일일 섭취 칼로리를 계산하고,  
+입력된 식단 정보를 기반으로 **생성형 AI**가 영양 피드백을 제공하는 서비스입니다.
+
+### 🚀 핵심 기능
+- JWT 기반 로그인 / 회원가입
+- 사용자 프로필(키, 몸무게, 활동 수준) 등록
+- 일일 목표 칼로리 자동 계산
+- 식단 등록 및 조회
+- 식단에 대한 GPT 기반 AI 피드백 제공
+- AI 분석 레포트 히스토리 확인 (달력 기반)
+
+<br/>
 
 ### 🎬 시연 영상
 
