@@ -4,14 +4,17 @@
 
 ### calorie-chat ✅
 
-[<img src="https://img.shields.io/badge/-readme.md-important?style=flat&logo=google-chrome&logoColor=white" />]() [<img src="https://img.shields.io/badge/-tech blog-blue?style=flat&logo=google-chrome&logoColor=white" />]() [<img src="https://img.shields.io/badge/release-v0.0.0-yellow?style=flat&logo=google-chrome&logoColor=white" />]() 
-<br/> [<img src="https://img.shields.io/badge/프로젝트 기간-2025.05.15~2025.06.20-green?style=flat&logo=&logoColor=white" />]()
+### calorie-chat ✅
 
-<a href="[https://youtu.be/EjwiYa5g3FM](https://www.youtube.com/watch?v=26vgIP5YOt8)" target="_blank">
-  <img src="https://github.com/hiho1010/calorie-chat/blob/main/src/main/resources/static/img/calorie_chat_logo.png" width="640" alt="Calorie-chat 유튜브 데모 영상">
-</a>
-<p>📺 Calorie-chat 프로젝트 시연 영상 보러가기</p>
-</div> 
+[<img src="https://img.shields.io/badge/-readme.md-important?style=flat&logo=google-chrome&logoColor=white" />]() 
+[<img src="https://img.shields.io/badge/-tech blog-blue?style=flat&logo=google-chrome&logoColor=white" />]() 
+[<img src="https://img.shields.io/badge/release-v0.0.0-yellow?style=flat&logo=google-chrome&logoColor=white" />]()  
+[<img src="https://img.shields.io/badge/프로젝트 기간-2025.05.15~2025.06.20-green?style=flat&logo=&logoColor=white" />]()
+
+[![Calorie-chat 데모 영상](https://github.com/hiho1010/calorie-chat/blob/main/src/main/resources/static/img/calorie_chat_logo.png)](https://www.youtube.com/watch?v=26vgIP5YOt8)
+
+📺 Calorie-chat 프로젝트 시연 영상 보러가기
+
 
 ## 📝 소개
 사용자 몸무게와 키를 바탕으로 한 일일 목표칼로리 계산 및 생성형 AI를 활용한 식단 피드백
