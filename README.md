@@ -92,7 +92,7 @@
 <br />
 
 ## 💁‍♂️ 프로젝트 팀원
-|Backend/Frontend|Backtend|Backend||
-|:---:|:---:|:---:|:---:|
-| ![](https://avatars.githubusercontent.com/u/39736916?v=4)| ![](https://avatars.githubusercontent.com/u/121941036?v=4)| ![](https://avatars.githubusercontent.com/u/170619611?v=4)|
-|[이동국](https://github.com/leedongguk)|[류승환](https://github.com/Federico-15)|[김채](https://github.com/chaeelin)|
+|Backend/Frontend|Backend|
+|:---:|:---:|:---:|
+| ![](https://avatars.githubusercontent.com/u/39736916?v=4)| ![](https://avatars.githubusercontent.com/u/121941036?v=4)|
+|[이동국](https://github.com/leedongguk)|[류승환](https://github.com/Federico-15)|
