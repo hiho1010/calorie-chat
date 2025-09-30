@@ -102,7 +102,7 @@
     </td>
     <td align="center" width="150px">
       <a href="깃허브 링크">
-        <img src="이미지 " width="100px;" alt="임희호 프로필"/><br />
+        <img src="https://github.com/user-attachments/assets/c166f20b-768e-4392-a44f-73ccfe9f926a" width="100px;" alt="임희호 프로필"/><br />
         <sub><b>임희호</b></sub>
       </a>
     </td>
